@@ -1,23 +1,13 @@
-# 喂喂机网易云连接服务 · 部署实验包
+# 喂喂机网易云后端 v0.3 (试运行)
 
-本包**不是已接通网易云的成品**。它提供与喂喂机现有 `index.html` 中 `/api/netease/*` 调用对应的服务端适配器，不会修改网页布局。
+本版本把社区 NeteaseCloudMusicApi 安装到**同一 Render 服务**并在本机 `127.0.0.1:3101` 启动，避免再部署第二个服务或配置 `NETEASE_API_URL`。现有前端 `/api/netease/*` 接口不变。仅供用户自己的账号连接使用；不是网易云官方授权产品。**尚未在线实测，可能受社区 API 停更、平台登录风控影响。**
 
-## 部署到 Render
+## 上传
+把 `server.mjs`、`package.json`、`render.yaml` 上传覆盖到原 GitHub 仓库根目录（不要上传 ZIP 本身）。Render 自动部署。原有 Render 环境变量 `APP_ORIGIN=https://zhuanjiaoyudaoxian.github.io` 保留，旧 `NETEASE_API_URL` 如有设置应删除，否则会覆盖内置 API。访问 `/health` 应显示 `ok:true`；但这只证明桥接进程在运行，不代表登录成功。接着在喂喂机网易云入口输入 `https://weiwei-netease-backend.onrender.com`，进行扫码登录测试。
 
-1. 将本文件夹单独上传到你控制的私有 GitHub 仓库。
-2. Render → New → Blueprint → 选择该仓库，读取 `render.yaml`。
-3. 配置 `APP_ORIGIN` 为喂喂机页面来源，例如 `https://你的用户名.github.io`，只写协议和域名。
-4. `NETEASE_API_URL` 需要填写**自己控制的、NeteaseCloudMusicApi 兼容的服务**。此适配器不会自行提供网易云接口；如果没有这个上游，扫码登录不能工作。不要填写陌生人的公共 API，避免凭证泄露。
-5. 部署后访问 `https://你的服务.onrender.com/health`，`configured:true` 只代表填了上游地址，**不代表网易云登录成功**。
-
-## 重要限制
-
-- 非官方接口可能失效；需要遵守网易云及上游项目条款。
-- `MUSIC_U` 或扫码登录会话属于敏感凭证，不应写进公开仓库、前端 HTML 或聊天记录。
-- 服务仅保存在内存中的会话，Render 重启会丢失；iOS Safari 跨站 Cookie 可能导致无法恢复登录。
-- 音频播放接口目前会返回 403，**普通及会员歌曲都没有接通**；不会绕过版权、DRM 或付费限制。
-- 这份包只供实验，不要未经安全加固就作为公开多用户服务。
-
-## 本地语法验证
-
-`node --check server.mjs`，然后设置环境变量并 `npm start`。
+## 已知限制
+- Render 免费服务休眠/重启后内存中的登录状态会丢失，需重新扫码。
+- iOS Safari 对跨站 Cookie 的限制可能导致扫码成功但网页无法识别登录；需要后续调整为同源代理或其他合规会话方案。
+- 歌曲播放端点仍明确返回未授权，**不提供 VIP 破解或绕过 DRM**。
+- 第三方社区 API 可能安装失败、启动路径变动或网易云端接口变化。检查 Render 部署日志以定位。
+- 不要把 MUSIC_U、Cookie、密码或二维码内容提交到公开仓库。

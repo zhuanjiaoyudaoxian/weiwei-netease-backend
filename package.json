@@ -1,1 +1,9 @@
-{"name":"wei-netease-bridge","private":true,"version":"0.2.0","type":"module","scripts":{"start":"node server.mjs"},"engines":{"node":">=20"}}
+{
+  "name": "wei-netease-bridge",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "engines": {"node": ">=20"},
+  "scripts": {"start": "node server.mjs"},
+  "dependencies": {"NeteaseCloudMusicApi": "github:Binaryify/NeteaseCloudMusicApi"}
+}

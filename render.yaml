@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: wei-netease-bridge
+    name: weiwei-netease-backend
     runtime: node
     plan: free
     buildCommand: npm install
@@ -8,6 +8,4 @@ services:
     healthCheckPath: /health
     envVars:
       - key: APP_ORIGIN
-        sync: false
-      - key: NETEASE_API_URL
         sync: false
