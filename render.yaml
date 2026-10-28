@@ -1,11 +1,12 @@
 services:
   - type: web
     name: weiwei-netease-backend
-    runtime: node
+    env: node
     plan: free
-    buildCommand: npm install
+    buildCommand: npm install --omit=dev
     startCommand: npm start
-    healthCheckPath: /health
     envVars:
       - key: APP_ORIGIN
+        sync: false
+      - key: NETEASE_API_URL
         sync: false

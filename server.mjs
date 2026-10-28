@@ -1,14 +1,10 @@
 import http from 'node:http';
 import crypto from 'node:crypto';
-import { spawn } from 'node:child_process';
-import { createRequire } from 'node:module';
-import { dirname, join } from 'node:path';
-const require=createRequire(import.meta.url);
 
 // Self-hosted adapter for a separately operated, unofficial NCM API.
 // Does not bypass DRM, paywalls or music licensing.
 const PORT=Number(process.env.PORT||3000);
-const UPSTREAM=(process.env.NETEASE_API_URL||'http://127.0.0.1:3101').replace(/\/$/,'');
+const UPSTREAM=(process.env.NETEASE_API_URL||'').replace(/\/$/,'');
 const APP_ORIGIN=(process.env.APP_ORIGIN||'').replace(/\/$/,'');
 const sessions=new Map();
 const pending=new Map();
@@ -61,14 +57,4 @@ const server=http.createServer(async(req,res)=>{
   return json(res,404,{error:'Not found'},c);
  }catch(e){return json(res,502,{error:String(e.message||e)},c)}
 });
-// Run the community API privately on loopback, not exposed to the Internet.
-if (!process.env.NETEASE_API_URL) {
- try {
-  const pkg=require.resolve('NeteaseCloudMusicApi/package.json');
-  const child=spawn(process.execPath,[join(dirname(pkg),'app.js')],{
-   env:{...process.env,PORT:'3101',HOST:'127.0.0.1'},stdio:'inherit'
-  });
-  child.on('exit',(code)=>console.error('Local NCM API exited:',code));
- } catch(e) { console.error('Local NCM API startup failed:',e.message); }
-}
 server.listen(PORT,()=>console.log('NCM bridge listening on '+PORT));
